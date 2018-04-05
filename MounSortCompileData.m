@@ -18,11 +18,10 @@ end
 clear totalUnits;
 
 allData = struct('fileName',cell(allUnits,1),'recordDate',cell(allUnits,1),...
-    'SpikeWaveForm',cell(allUnits,1),'recordTime',cell(allUnits,1),...
+    'recordTime',cell(allUnits,1),'expDay',cell(allUnits,1),'SpikeWaveForm',cell(allUnits,1),...
     'spikeTimes',cell(allUnits,1),'meanFR',cell(allUnits,1),'eventTimes',cell(allUnits,1),...
-    'eventIDs',cell(allUnits,1),...
-    'LFP',cell(allUnits,1),'trodalness',cell(allUnits,1),'gender',...
-    cell(allUnits,1),'species',cell(allUnits,1));
+    'eventIDs',cell(allUnits,1),'LFP',cell(allUnits,1),'trodalness',...
+    cell(allUnits,1),'gender',cell(allUnits,1),'species',cell(allUnits,1));
 
 preAmpGain = 1;
 
@@ -33,6 +32,11 @@ for ii=1:length(files)
       count = count+1;
       allData(count).fileName = files(ii).name(1:end-13);
       allData(count).recordDate = DateTime;
+      allData(count).recordTime = totalTime;
+      
+      index = regexp(files(ii).name,'ay');
+      
+      allData(count).expDay = str2double(files(ii).name(index+2));
       
       tempwave = cell(3,1);
       for kk=1:3
@@ -40,7 +44,6 @@ for ii=1:length(files)
       end
       
       allData(count).SpikeWaveForm = tempwave;
-      allData(count).recordTime = totalTime;
       allData(count).spikeTimes = allts{jj};
       allData(count).meanFR = length(allts{jj})/totalTime;
       allData(count).eventTimes = timeStamps;
