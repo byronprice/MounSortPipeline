@@ -48,44 +48,51 @@ if adChans == numChans
    check = length(allad{temp(1)});
    
    if check>10
-       newad = cell(adChans,1);
-       adfreqs = adfreqs(temp);
-       adgains = adgains(temp);
+       newad = cell(adChans/chansPerTrode,1);
+       newgains = zeros(adChans/chansPerTrode,1);
+       newfreqs = zeros(adChans/chansPerTrode,1);
        
-       for ii=1:adChans
-           newad{ii} = allad{temp(ii)};
+       count = 1;
+       for ii=1:chansPerTrode:adChans
+           newad{count} = allad{temp(ii)};
+           newgains(count) = adgains(temp(ii));
+           newfreqs(count) = adfreqs(temp(ii));
+           count = count+1;
        end
        allad = newad;
+       adgains = newgains;
+       adfreqs = newfreqs;
    else
-       allad = cell(numChans,1);
-       adgains = adgains(33).*ones(numChans,1);
-       adfreqs = adfreqs(33).*ones(numChans,1);
+       allad = cell(numChans/chansPerTrode,1);
+       adgains = adgains(33).*ones(numChans/chansPerTrode,1);
+       adfreqs = adfreqs(33).*ones(numChans/chansPerTrode,1);
    end
 elseif adChans>0
     check = length(allad{temp(1)});
     if check>10
-        newad = cell(numChans,1);
-        for ii=1:numChans
+        newad = cell(numChans/chansPerTrode,1);
+        for ii=1:numChans/chansPerTrode
            newad{ii} = allad{temp(1)};
         end
         allad = newad;
-        adgains = adgains(33).*ones(numChans,1);
-        adfreqs = adfreqs(33).*ones(numChans,1);
+        adgains = adgains(33).*ones(numChans/chansPerTrode,1);
+        adfreqs = adfreqs(33).*ones(numChans/chansPerTrode,1);
     else
-       allad = cell(numChans,1);
-       adgains = adgains(33).*ones(numChans,1);
-       adfreqs = adfreqs(33).*ones(numChans,1);
+       allad = cell(numChans/chansPerTrode,1);
+       adgains = adgains(33).*ones(numChans/chansPerTrode,1);
+       adfreqs = adfreqs(33).*ones(numChans/chansPerTrode,1);
     end
 else
-   allad = cell(numChans,1);
-   adgains = adgains(33).*ones(numChans,1);
-   adfreqs = adfreqs(33).*ones(numChans,1);
+   allad = cell(numChans/chansPerTrode,1);
+   adgains = adgains(33).*ones(numChans/chansPerTrode,1);
+   adfreqs = adfreqs(33).*ones(numChans/chansPerTrode,1);
 end
 
 numUniqueUnits = totalUnits/chansPerTrode;
 
 newwaves = cell(numUniqueUnits,1);
 newts = cell(numUniqueUnits,1);
+
 count = 1;
 for ii=1:numUniqueUnits
     times = allts{count};
@@ -93,10 +100,15 @@ for ii=1:numUniqueUnits
     waves = waves';
     [numSamples,numEvents] = size(waves);
     fullWaves = zeros(chansPerTrode,numSamples,numEvents);
+    
+    minicount = 0;
+    fullAd = zeros(size(allad{1}),1);
     for jj=1:chansPerTrode
         waves = allwaves{count};
         waves = waves';
         fullWaves(jj,:,:) = waves;
+        
+        temp = allad{count};
         count = count+1;
     end
     newwaves{ii} = fullWaves;
