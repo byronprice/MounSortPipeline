@@ -59,11 +59,11 @@ for ii=1:length(files)
           voltage = 1000.*((tempData).*SlowPeakV)./(0.5*...
               (2^SlowADResBits)*adgains(jj)*preAmpGain);
           
-          n = 2;
-          notch = 60/(adfreqs(jj)/2);
-          bw = notch/n;
-          [b,a] = iirnotch(notch,bw);
-          allData(count).LFP = filtfilt(b,a,voltage);
+%           n = 2;
+%           notch = 60/(adfreqs(jj)/2);
+%           bw = notch/n;
+%           [b,a] = iirnotch(notch,bw);
+          allData(count).LFP = voltage; %filtfilt(b,a,voltage);
       end
       
       allData(count).trodalness = chansPerTrode;
