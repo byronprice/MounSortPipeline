@@ -100,4 +100,5 @@ cd(directory);
 save(sprintf('%s-mda.mat',fileName(1:end-4)),'allts','allwaves','Fs',...
     'allEventTimes','totalTime','chansPerTrode');
 
+
 end
