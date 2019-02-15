@@ -79,7 +79,7 @@ if totalUnits>0
             newts{count} = trueEventTimes(indices);
         end
     end
-    clear difference ind trueWaves count;
+    clear difference ind trueWaves count allts allwaves allEventTimes;
     
     % include and exclude units
     %  criterion for inclusion:
@@ -91,9 +91,9 @@ if totalUnits>0
     
     pointProcessSpikes = zeros(round(totalTime*timeMultiplier),totalUnits);
     for ii=1:totalUnits
-        spikeTimes = max(1,round(newts{ii}.*timeMultiplier));
+        spikeTimes = max(1,round((newts{ii}-startTime).*timeMultiplier));
         for jj=1:length(spikeTimes)
-            pointProcessSpikes(spikeTimes(jj),ii) = 1;
+            pointProcessSpikes(spikeTimes(jj),ii) = pointProcessSpikes(spikeTimes(jj),ii)+1;
         end
     end
     

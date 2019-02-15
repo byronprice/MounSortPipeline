@@ -12,6 +12,7 @@ cd(directory);
 load(fileName,'allSpikeData','Fs','lowpassTimes');
 
 totalTime = max(lowpassTimes)-min(lowpassTimes)+10/1000;
+startTime = min(lowpassTimes);
 
 % REORGANIZE SPIKING DATA
 numChans = size(allSpikeData,1);
@@ -98,7 +99,7 @@ cd(directory);
 % clear ii i j jj q raw event_times tmpwaves maxpeak peak_inds peaks
 
 save(sprintf('%s-mda.mat',fileName(1:end-4)),'allts','allwaves','Fs',...
-    'allEventTimes','totalTime','chansPerTrode');
+    'allEventTimes','totalTime','chansPerTrode','startTime');
 
 
 end
