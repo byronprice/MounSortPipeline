@@ -26,20 +26,16 @@ for ii=1:numFiles
     firingFile = files(ii).name;
     A = readmda(firingFile);
     
-    units = unique(A(3,:));
-    numUnits = length(units);
+    unitIDs = unique(A(3,:));
+    nunits = length(unitIDs);
     
-    spikeTimes{ii} = cell(numUnits,1);
+    spikeTimes{ii} = cell(nunits,1);
     
-    count = 1;
     pseudo_event_times = A(2,:);
     unitcode = A(3,:);
-    unitIDs = unique(unitcode);
-    nunits = length(unitIDs);
     for kk=1:nunits
-        spikeTimes{ii}{count} = pseudo_event_times(unitcode==unitIDs(kk))+1;
+        spikeTimes{ii}{kk} = pseudo_event_times(unitcode==unitIDs(kk))+1;
         totalUnits = totalUnits+1;
-        count = count+1;
     end
 end
 
@@ -51,6 +47,7 @@ if totalUnits>0
     % convert from pseudo event times to experimental time
     newts = cell(totalUnits,1);
     newwaves = cell(totalUnits,1);
+    originalChannel = zeros(totalUnits,1);
     
     fileName1 = strcat(directory,'-mda.mat');
     load(fileName1)
@@ -77,6 +74,7 @@ if totalUnits>0
             indices = indices(indices>0);
             newwaves{count} = trueWaves(:,:,indices);
             newts{count} = trueEventTimes(indices);
+            originalChannel(count) = ii;
         end
     end
     clear difference ind trueWaves count allts allwaves allEventTimes;
@@ -108,12 +106,12 @@ if totalUnits>0
         spikeTimes = newts{ii};
         for jj=ii+1:totalUnits
             [r,~] = corrcoef(pointProcessSpikes(:,ii),pointProcessSpikes(:,jj));
-            if r(1,2) >= correlation_inclusion
+             if r(1,2) >= correlation_inclusion
                 toInclude(jj) = 0;
                 pointProcessSpikes(:,ii) = (pointProcessSpikes(:,ii)+pointProcessSpikes(:,jj))>0;
                 pointProcessSpikes(:,jj) = 0;
                 temp = newts{jj};
-                newts{ii} = unique(round([spikeTimes;temp].*timeMultiplier))./timeMultiplier;
+                newts{ii} = unique(round(sort([spikeTimes;temp]).*timeMultiplier))./timeMultiplier;
                 newts{jj} = 0;
             end
         end
@@ -139,6 +137,7 @@ if totalUnits>0
     if totalUnits>0
         allts = cell(totalUnits,1);
         allwaves = cell(totalUnits,1);
+        origChannel = zeros(totalUnits,1);
         meanwaves = cell(totalUnits,3);
         
         inds = find(toInclude==1);
@@ -146,7 +145,7 @@ if totalUnits>0
         for ii=1:totalUnits
             allts{ii} = newts{inds(ii)};
             allwaves{ii} = newwaves{inds(ii)};
-            
+            origChannel(ii) = originalChannel(inds(ii));
             tempwaves = allwaves{ii};
             meanwaves{ii,2} = squeeze(mean(tempwaves,3));
             
@@ -186,7 +185,7 @@ if totalUnits>0
         newFileName = sprintf('%s-mounsort.mat',fileName1(1:end-8));
         save(newFileName,'allts','allwaves','meanwaves','auxData','eventInfo',...
             'events','eventTimes','Fs','lpFs','numChans','lowpassTimes',...
-            'chansPerTrode','totalUnits','totalTime');
+            'chansPerTrode','totalUnits','totalTime','origChannel');
     else
         fprintf('\nTotal Units: 0\n'); 
     end
