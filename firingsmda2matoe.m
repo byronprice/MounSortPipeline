@@ -147,7 +147,7 @@ if totalUnits>0
             allwaves{ii} = newwaves{inds(ii)};
             origChannel(ii) = originalChannel(inds(ii));
             tempwaves = allwaves{ii};
-            meanwaves{ii,2} = squeeze(mean(tempwaves,3));
+            meanwaves{ii,2} = squeeze(median(tempwaves,3));
             
             % run the bootstrap to get 95% confidence intervals on waveform
             alpha = 0.05;
@@ -160,9 +160,9 @@ if totalUnits>0
                 
                 bootstrap = zeros(numIter,numSamples);
                 for jj=1:numIter
-                    myinds = random('Discrete Uniform',numEvents,[numEvents,1]);
+                    myinds = random('Discrete Uniform',numEvents,[floor(numEvents/2),1]);
                     temp = data(:,myinds);
-                    bootstrap(jj,:) = mean(temp,2);
+                    bootstrap(jj,:) = median(temp,2);
                 end
                 Q = quantile(bootstrap,[alpha/2,1-alpha/2],1);
                 result1(kk,:) = Q(1,:);
