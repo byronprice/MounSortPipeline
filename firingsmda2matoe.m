@@ -95,9 +95,9 @@ if totalUnits>0
         end
     end
     
-    refractory_cutoff = 2/1000; % 2ms
+    refractory_cutoff = 1.5/1000; % 2ms
     refractory_inclusion = 0.02; % 2%
-    spikeHz_cutofflow = 0.1;spikeNum_cutofflow = spikeHz_cutofflow*totalTime; % 0.1 Hz
+    spikeHz_cutofflow = 0.5;spikeNum_cutofflow = spikeHz_cutofflow*totalTime; % 0.1 Hz
     spikeHz_cutoffhigh = 100;spikeNum_cutoffhigh = spikeHz_cutoffhigh*totalTime; % 100 Hz
     correlation_inclusion = 0.8; % 0.8 correlation between two neurons throughout recording
     toInclude = ones(totalUnits,1);

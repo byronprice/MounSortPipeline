@@ -56,42 +56,86 @@ clear newwaves fullWaves newts times waves;
 mkdir(sprintf('%s',fileName(1:end-4)));
 cd(sprintf('%s',fileName(1:end-4)));
 
+% allEventTimes = cell(numUniqueChans,1);
+% events = [];
+% raws = [];
+% for ii=1:numUniqueChans
+% %    waves = allwaves{ii}; 
+% %    waves = waves'; % number of samples in the snippet by number of events,
+% %             % if a tetrode, should be 4 by number of samples by number of
+% %             % events
+% %    tmpwaves = reshape(waves,[chansPerTrode,size(waves,1),size(waves,2)]);
+% %    clear waves;
+%    tmpwaves = allwaves{ii};
+%    
+%    [peaks,i] = min(tmpwaves,[],2); % i is the column index of the peak of each channel
+%    [maxpeak,j] = min(peaks,[],1); % j is the row index of the peak across channel peaks
+%    
+%    % use j to index i, find the index of the peak of each waveform across channels
+%    j = reshape(j,1,size(j,3));
+%    i = reshape(i,chansPerTrode,size(i,3));
+%    peak_inds =  zeros(1,size(i,2));
+%    for q = 1:size(i,2)
+%        peak_inds(q) = i(j(q),q);
+%    end
+%    
+%    raw=reshape(cat(2,tmpwaves,zeros(size(tmpwaves))),chansPerTrode,2*numSamples*size(tmpwaves,3));
+%    event_times=peak_inds+(0:size(tmpwaves,3)-1)*2*numSamples;
+%    event_times = int32(event_times);
+%    
+%    raws = [raws;raw];
+%    
+%    allEventTimes{ii} = event_times;
+%    
+% %    if ~exist(sprintf('%s.mda',fileName(1:end-4)),'dir')
+% %        mkdir(sprintf('%s.mda',fileName(1:end-4)))
+% %    end
+% %    cd(sprintf('%s',fileName(1:end-4)));
+%    
+%    %write mda files
+% %    writemda(event_times,sprintf('event_times.nt%02d.mda',ii),'int32');
+% %    writemda(raw,sprintf('raw.nt%02d.mda',ii),'float64');
+%    
+% end
+
+% writemda(events,sprintf('event_times.nt%02d.mda',1),'int32');
+% writemda(raws,sprintf('raw.nt%02d.mda',1),'float64');
+
 allEventTimes = cell(numUniqueChans,1);
 for ii=1:numUniqueChans
-%    waves = allwaves{ii}; 
-%    waves = waves'; % number of samples in the snippet by number of events,
-%             % if a tetrode, should be 4 by number of samples by number of
-%             % events
-%    tmpwaves = reshape(waves,[chansPerTrode,size(waves,1),size(waves,2)]);
-%    clear waves;
-   tmpwaves = allwaves{ii};
-   
-   [peaks,i] = min(tmpwaves,[],2); % i is the column index of the peak of each channel
-   [maxpeak,j] = min(peaks,[],1); % j is the row index of the peak across channel peaks
-   
-   % use j to index i, find the index of the peak of each waveform across channels
-   j = reshape(j,1,size(j,3));
-   i = reshape(i,chansPerTrode,size(i,3));
-   peak_inds =  zeros(1,size(i,2));
-   for q = 1:size(i,2)
-       peak_inds(q) = i(j(q),q);
-   end
-   
-   raw=reshape(cat(2,tmpwaves,zeros(size(tmpwaves))),chansPerTrode,2*numSamples*size(tmpwaves,3));
-   event_times=peak_inds+(0:size(tmpwaves,3)-1)*2*numSamples;
-   event_times = int32(event_times);
-   
-   allEventTimes{ii} = event_times;
-   
-%    if ~exist(sprintf('%s.mda',fileName(1:end-4)),'dir')
-%        mkdir(sprintf('%s.mda',fileName(1:end-4)))
-%    end
-%    cd(sprintf('%s',fileName(1:end-4)));
-   
-   %write mda files
-   writemda(event_times,sprintf('event_times.nt%02d.mda',ii),'int32');
-   writemda(raw,sprintf('raw.nt%02d.mda',ii),'float64');
-   
+    %    waves = allwaves{ii};
+    %    waves = waves'; % number of samples in the snippet by number of events,
+    %             % if a tetrode, should be 4 by number of samples by number of
+    %             % events
+    %    tmpwaves = reshape(waves,[chansPerTrode,size(waves,1),size(waves,2)]);
+    %    clear waves;
+    tmpwaves = allwaves{ii};
+    
+    [peaks,i] = min(tmpwaves,[],2); % i is the column index of the peak of each channel
+    [maxpeak,j] = min(peaks,[],1); % j is the row index of the peak across channel peaks
+    
+    % use j to index i, find the index of the peak of each waveform across channels
+    j = reshape(j,1,size(j,3));
+    i = reshape(i,chansPerTrode,size(i,3));
+    peak_inds =  zeros(1,size(i,2));
+    for q = 1:size(i,2)
+        peak_inds(q) = i(j(q),q);
+    end
+    
+    raw=reshape(cat(2,tmpwaves,zeros(size(tmpwaves))),chansPerTrode,2*numSamples*size(tmpwaves,3));
+    event_times=peak_inds+(0:size(tmpwaves,3)-1)*2*numSamples;
+    event_times = int32(event_times);
+    
+    allEventTimes{ii} = event_times;
+    
+    %    if ~exist(sprintf('%s.mda',fileName(1:end-4)),'dir')
+    %        mkdir(sprintf('%s.mda',fileName(1:end-4)))
+    %    end
+    %    cd(sprintf('%s',fileName(1:end-4)));
+    
+    %write mda files
+    writemda(event_times,sprintf('event_times.nt%02d.mda',ii),'int32');
+    writemda(raw,sprintf('raw.nt%02d.mda',ii),'float64');
 end
 
 cd(directory);
