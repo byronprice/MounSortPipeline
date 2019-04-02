@@ -29,12 +29,13 @@ end
 
 clearvars -except spikeTimes directory totalUnits
 
-load('RecordingInfo.mat');
-
 cd ..
 
 if totalUnits>0
-    fileName1 = strcat(directory,'-mda.mat');
+    fileName1 = strcat(directory,'.mat');
+    load(fileName1,'timestamps','totalTime','startTime','Fs',...
+        'events','eventInfo','eventTimes','chansPerTrode','auxData',...
+        'lowpassTimes')
     % convert from pseudo event times to experimental time
     newts = cell(totalUnits,1);
 
@@ -67,9 +68,9 @@ if totalUnits>0
         end
     end
     
-    refractory_cutoff = 2/1000; % 2ms
+    refractory_cutoff = 1.5/1000; % 2ms
     refractory_inclusion = 0.02; % 2%
-    spikeHz_cutofflow = 0.1;spikeNum_cutofflow = spikeHz_cutofflow*totalTime; % 0.1 Hz
+    spikeHz_cutofflow = 0.5;spikeNum_cutofflow = spikeHz_cutofflow*totalTime; % 0.1 Hz
     spikeHz_cutoffhigh = 100;spikeNum_cutoffhigh = spikeHz_cutoffhigh*totalTime; % 100 Hz
     correlation_inclusion = 0.8; % 0.8 correlation between two neurons throughout recording
     toInclude = ones(totalUnits,1);
@@ -117,13 +118,13 @@ if totalUnits>0
         
         fprintf('\nTotal Units: %d\n',totalUnits);
         
-        oldFileName = sprintf('%s.mat',fileName1(1:end-8));
+        oldFileName = sprintf('%s.mat',fileName1(1:end-4));
         load(oldFileName,'auxData','eventInfo','events','eventTimes');
         
-        newFileName = sprintf('%s-mounsortfull.mat',fileName1(1:end-8));
+        newFileName = sprintf('%s-mounsortfull.mat',fileName1(1:end-4));
         save(newFileName,'allts','auxData','eventInfo',...
             'events','eventTimes','Fs','timestamps',...
-            'chansPerTrode','totalUnits','totalTime','startTime');
+            'chansPerTrode','totalUnits','totalTime','startTime','lowpassTimes');
     else
         fprintf('\nTotal Units: 0\n'); 
     end
