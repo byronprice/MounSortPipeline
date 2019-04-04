@@ -33,9 +33,10 @@ cd ..
 
 if totalUnits>0
     fileName1 = strcat(directory,'.mat');
-    load(fileName1,'timestamps','totalTime','startTime','Fs',...
+    load(fileName1,'totalTime','startTime','Fs',...
         'events','eventInfo','eventTimes','chansPerTrode','auxData',...
         'lowpassTimes')
+    timestamps = (startTime:1/Fs:(startTime+totalTime))';
     % convert from pseudo event times to experimental time
     newts = cell(totalUnits,1);
 
@@ -123,7 +124,7 @@ if totalUnits>0
         
         newFileName = sprintf('%s-mounsortfull.mat',fileName1(1:end-4));
         save(newFileName,'allts','auxData','eventInfo',...
-            'events','eventTimes','Fs','timestamps',...
+            'events','eventTimes','Fs',...
             'chansPerTrode','totalUnits','totalTime','startTime','lowpassTimes');
     else
         fprintf('\nTotal Units: 0\n'); 
