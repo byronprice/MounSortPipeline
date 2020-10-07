@@ -16,7 +16,7 @@ if nargin<1
     directory = pwd;
 end
 
-A = readmda('rawfire.mda');
+A = readmda('rawfire.mda'); %%readmda('firings.curated.mda');
 unitIDs = unique(A(3,:));
 totalUnits = length(unitIDs);
 spikeTimes = cell(totalUnits,1);
